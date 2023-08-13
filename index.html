@@ -1,85 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f4f4f4;
-}
-
-.container {
-  text-align: center;
-  padding: 20px;
-  border: 1px solid #ccc;
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-</style>
-<title>Random Key Generator</title>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Key Generator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="container">
-  <h1>Random Key Generator</h1>
-  <p>Current Key: <span id="randomKey">Loading...</span></p>
-  <button id="resetButton">Reset Key</button>
-</div>
-<script>
-// Function to generate a random key with 10 characters of letters and numbers
-function generateRandomKey() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let key = '';
-  for (let i = 0; i < 10; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    key += characters.charAt(randomIndex);
-  }
-  return key;
-}
-
-// Check if a key already exists in localStorage for this IP
-$.getJSON('https://api.db-ip.com/v2/free/self', function(data) {
-  const userIP = data.ipAddress;
-  let storedKey = localStorage.getItem(userIP);
-  if (!storedKey) {
-    storedKey = generateRandomKey();
-    localStorage.setItem(userIP, storedKey);
-  }
-
-  // Update the HTML element with the key
-  const randomKeyElement = document.getElementById('randomKey');
-  randomKeyElement.textContent = storedKey;
-
-  // Handle the reset button
-  const resetButton = document.getElementById('resetButton');
-  resetButton.addEventListener('click', () => {
-    storedKey = generateRandomKey();
-    localStorage.setItem(userIP, storedKey);
-    randomKeyElement.textContent = storedKey;
-  });
-});
-</script>
+    <div class="container">
+        <h1>Roblox Key Generator</h1>
+        <p>Your generated key: <span id="generated-key">Loading...</span></p>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
