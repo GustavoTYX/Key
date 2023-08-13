@@ -1,4 +1,6 @@
 const generatedKeyElement = document.getElementById('generated-key');
+const inputKeyElement = document.getElementById('input-key');
+const verifyButton = document.getElementById('verify-button');
 
 function generateRandomKey() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -24,6 +26,13 @@ function updateGeneratedKey() {
     // For this example, we'll just log the data to the console.
     console.log('Key Data:', keyData);
 }
+
+verifyButton.addEventListener('click', function() {
+    const inputKey = inputKeyElement.value.trim();
+    // Send the inputKey to Roblox using a RemoteEvent for verification.
+    // The Roblox code should handle the verification and respond accordingly.
+    console.log('Verifying key:', inputKey);
+});
 
 updateGeneratedKey();
 setInterval(updateGeneratedKey, 24 * 60 * 60 * 1000); // Update every 24 hours
