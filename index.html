@@ -187,7 +187,7 @@
 <div id="container">
   <h1>CosmoHub</h1>
   <h2>CosmoHUB Key</h2>
-  <button id="generateBtn">Generate Key</button>
+  <button id="resetBtn">Reset Key</button>
   <div id="key"></div>
   <div id="timer"></div>
 </div>
@@ -210,7 +210,7 @@
 <button id="themeToggle">Themes</button>
 <div id="notifications"></div>
 <script>
-    const generateBtn = document.getElementById('generateBtn');
+const resetBtn = document.getElementById('resetBtn');
     const keyDisplay = document.getElementById('key');
     const timerDisplay = document.getElementById('timer');
     const confirmDialog = document.getElementById('confirmDialog');
@@ -228,7 +228,7 @@
     let keyGenerated = false;
     let darkTheme = false;
     const timeInterval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-    
+
   function showNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'notification';
@@ -316,6 +316,39 @@
 
   menuToggle.addEventListener('click', () => {
     sideMenu.classList.toggle('visible');
+  });
+
+  function isKeyGeneratedForIP() {
+    const storedIP = localStorage.getItem('cosmohub_ip');
+    const currentIP = '<IP_DO_CLIENTE>'; // Substitua pelo IP real do cliente
+    
+    return storedIP === currentIP;
+  }
+
+  function saveGeneratedIP() {
+    const currentIP = '<IP_DO_CLIENTE>'; // Substitua pelo IP real do cliente
+    localStorage.setItem('cosmohub_ip', currentIP);
+  }
+
+  resetBtn.addEventListener('click', () => {
+    const currentTime = Date.now();
+    if (!isKeyGeneratedForIP() || currentTime - lastGeneratedTime >= timeInterval) {
+      lastGeneratedTime = currentTime;
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let randomKey = '';
+      for (let i = 0; i < 7; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomKey += characters.charAt(randomIndex);
+      }
+      lastKey = randomKey;
+      keyGenerated = true;
+      keyDisplay.textContent = `Generated Key: ${lastKey}`;
+      timerDisplay.textContent = 'Next key available in 24 hours.';
+      saveGeneratedIP(); // Salvar o IP após a geração da chave
+      showNotification('Key generated successfully!');
+    } else {
+      confirmDialog.style.display = 'block';
+    }
   });
 
   setInterval(updateTimer, 1000);
