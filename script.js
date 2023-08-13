@@ -1,38 +1,63 @@
-const generatedKeyElement = document.getElementById('generated-key');
-const inputKeyElement = document.getElementById('input-key');
-const verifyButton = document.getElementById('verify-button');
+const keyElement = document.getElementById("generatedKey");
+const resetButton = document.getElementById("resetButton");
+const timerElement = document.getElementById("timer");
+
+let key = generateRandomKey();
+let timeLeft = 24 * 60 * 60; // 24 hours in seconds
 
 function generateRandomKey() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let key = '';
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
     for (let i = 0; i < 10; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        key += characters.charAt(randomIndex);
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    return key;
+    return result;
 }
 
-function updateGeneratedKey() {
-    const generatedKey = generateRandomKey();
-    generatedKeyElement.textContent = generatedKey;
-
-    const keyData = {
-        key: generatedKey,
-        expiration: Date.now() + 24 * 60 * 60 * 1000, // 24 hours from now
-        ip: userip
-    };
-
-    // You should use a more secure way to store this data, like sending it to a server.
-    // For this example, we'll just log the data to the console.
-    console.log('Key Data:', keyData);
+function updateTimer() {
+    const hours = Math.floor(timeLeft / 3600);
+    const minutes = Math.floor((timeLeft % 3600) / 60);
+    const seconds = timeLeft % 60;
+    timerElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
 }
 
-verifyButton.addEventListener('click', function() {
-    const inputKey = inputKeyElement.value.trim();
-    // Send the inputKey to Roblox using a RemoteEvent for verification.
-    // The Roblox code should handle the verification and respond accordingly.
-    console.log('Verifying key:', inputKey);
+resetButton.addEventListener("click", () => {
+    key = generateRandomKey();
+    keyElement.textContent = key;
+    sendKeyToOtherSite(key);
 });
 
-updateGeneratedKey();
-setInterval(updateGeneratedKey, 24 * 60 * 60 * 1000); // Update every 24 hours
+function update() {
+    if (timeLeft > 0) {
+        timeLeft--;
+        updateTimer();
+    } else {
+        key = generateRandomKey();
+        updateTimer();
+        timeLeft = 24 * 60 * 60;
+    }
+}
+
+function sendKeyToOtherSite(key) {
+    // Fazer uma requisição para enviar a chave para o site vazio
+    // Aqui você usaria uma abordagem como XMLHttpRequest, fetch ou outras bibliotecas de requisição
+    // No exemplo abaixo, usaremos o método fetch
+
+    const url = "URL_DO_SEU_SITE_VAZIO/key_receiver.php";
+    fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ key: key }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Key sent to the other site:", data);
+    })
+    .catch(error => {
+        console.error("Error sending key:", error);
+    });
+}
+
+setInterval(update, 1000);
