@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CosmoHub</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    transition: background-color 0.5s;
+  }
+  #container {
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #95a5a6;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 320px;
+    transition: background-color 0.5s;
+  }
+  h1, h2 {
+    color: #2c3e50;
+    font-size: 32px;
+  }
+  button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  button:hover {
+    transform: scale(1.05);
+  }
+  #key {
+    margin-top: 20px;
+    font-size: 24px;
+  }
+  #timer {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  #confirmDialog {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    animation: fadeIn 0.5s;
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  #confirmDialog p {
+    margin-bottom: 20px;
+  }
+  #confirmDialog button {
+    padding: 5px 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  #confirmDialog button:last-child {
+    margin-right: 0;
+  }
+  #themeToggle {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #themeToggle:focus {
+    outline: none;
+  }
+  #notifications {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+  }
+  .notification {
+    background-color: #3498db;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: none;
+    animation: fadeInOut 0.5s;
+  }
+  #closeThemeDialog {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    color: #3498db;
+    cursor: pointer;
+  }
+  #themeDialog {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transform-origin: center;
+    display: none;
+    transition: transform 0.5s;
+  }
+  #themeDialog.visible {
+    display: block;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  #menuToggle {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    padding: 5px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  #menuToggle:focus {
+    outline: none;
+  }
+  #sideMenu {
+    position: fixed;
+    bottom: -300px;
+    left: 0;
+    width: 100%;
+    background-color: #2c3e50;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: bottom 0.5s;
+    z-index: 9998;
+  }
+  #sideMenu.visible {
+    bottom: 0;
+  }
+  #sideMenu a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    font-size: 18px;
+    transition: color 0.3s;
+  }
+  #sideMenu a:hover {
+    color: #3498db;
+  }
+</style>
+</head>
+<body>
+<button id="menuToggle">&#9776;</button>
+<div id="sideMenu">
+  <a href="#guide">Guide</a>
+  <a href="#home">Home</a>
+  <a href="#script">Script</a>
+  <a href="#key">Key</a>
+  <a href="#games">Games</a>
+  <a href="#about">About</a>
+</div>
+<div id="container">
+  <h1>CosmoHub</h1>
+  <h2>CosmoHUB Key</h2>
+  <button id="generateBtn">Generate Key</button>
+  <div id="key"></div>
+  <div id="timer"></div>
+</div>
+<div id="confirmDialog">
+  <p>Do you want to reset the key?</p>
+  <button id="confirmYes">Yes</button>
+  <button id="confirmNo">No</button>
+</div>
+<div id="themeDialog">
+  <span id="closeThemeDialog">&#10006;</span>
+  <p>Select a theme:</p>
+  <button class="themeBtn" data-color="#f3f3f3">White</button>
+  <button class="themeBtn" data-color="#2c3e50">Dark</button>
+  <button class="themeBtn" data-color="#27ae60">Green</button>
+  <button class="themeBtn" data-color="#e74c3c">Red</button>
+  <button class="themeBtn" data-color="#9b59b6">Purple</button>
+  <button class="themeBtn" data-color="#e67e22">Orange</button>
+  <button class="themeBtn" data-color="#3498db">Blue</button>
+</div>
+<button id="themeToggle">Themes</button>
+<div id="notifications"></div>
+<script>
+    const generateBtn = document.getElementById('generateBtn');
+    const keyDisplay = document.getElementById('key');
+    const timerDisplay = document.getElementById('timer');
+    const confirmDialog = document.getElementById('confirmDialog');
+    const confirmYesBtn = document.getElementById('confirmYes');
+    const confirmNoBtn = document.getElementById('confirmNo');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeDialog = document.getElementById('themeDialog');
+    const closeThemeDialog = document.getElementById('closeThemeDialog');
+    const themeButtons = document.querySelectorAll('.themeBtn');
+    const menuToggle = document.getElementById('menuToggle');
+    const sideMenu = document.getElementById('sideMenu');
+    const notificationsDiv = document.getElementById('notifications');
+    let lastGeneratedTime = 0;
+    let lastKey = '';
+    let keyGenerated = false;
+    let darkTheme = false;
+    const timeInterval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    
+  function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    notificationsDiv.appendChild(notification);
+    notification.style.display = 'block';
+    setTimeout(() => {
+      notificationsDiv.removeChild(notification);
+    }, 3000);
+  }
+
+  generateBtn.addEventListener('click', () => {
+    const currentTime = Date.now();
+    if (!keyGenerated || currentTime - lastGeneratedTime >= timeInterval) {
+      lastGeneratedTime = currentTime;
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let randomKey = '';
+      for (let i = 0; i < 7; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomKey += characters.charAt(randomIndex);
+      }
+      lastKey = randomKey;
+      keyGenerated = true;
+      keyDisplay.textContent = `Generated Key: ${lastKey}`;
+      timerDisplay.textContent = 'Next key available in 24 hours.';
+      showNotification('Key generated successfully!');
+    } else {
+      confirmDialog.style.display = 'block';
+    }
+  });
+
+  confirmYesBtn.addEventListener('click', () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomKey = '';
+    for (let i = 0; i < 7; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomKey += characters.charAt(randomIndex);
+    }
+    lastKey = randomKey;
+    keyDisplay.textContent = `Generated Key: ${lastKey}`;
+    confirmDialog.style.display = 'none';
+    showNotification('Key reset successfully!');
+  });
+
+  confirmNoBtn.addEventListener('click', () => {
+    confirmDialog.style.display = 'none';
+  });
+
+  themeToggle.addEventListener('click', () => {
+    themeDialog.classList.add('visible');
+  });
+
+  closeThemeDialog.addEventListener('click', () => {
+    themeDialog.classList.remove('visible');
+  });
+
+  themeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const color = button.getAttribute('data-color');
+      document.body.style.backgroundColor = color;
+      themeDialog.classList.remove('visible');
+      if (color === '#2c3e50') {
+        darkTheme = true;
+        themeToggle.textContent = 'White Theme';
+      } else {
+        darkTheme = false;
+        themeToggle.textContent = 'Dark Theme';
+      }
+      showNotification(`Theme changed to ${color}`);
+    });
+  });
+
+  function updateTimer() {
+    const currentTime = Date.now();
+    const timeDiff = lastGeneratedTime + timeInterval - currentTime;
+    if (timeDiff > 0) {
+      const hours = Math.floor(timeDiff / (60 * 60 * 1000));
+      const minutes = Math.floor((timeDiff % (60 * 60 * 1000)) / (60 * 1000));
+      const seconds = Math.floor((timeDiff % (60 * 1000)) / 1000);
+      timerDisplay.textContent = `Next key available in ${hours}h ${minutes}m ${seconds}s.`;
+    } else {
+      timerDisplay.textContent = 'Key available! Click to generate.';
+    }
+  }
+
+  menuToggle.addEventListener('click', () => {
+    sideMenu.classList.toggle('visible');
+  });
+
+  setInterval(updateTimer, 1000);
+</script>
+</body>
+</html>
