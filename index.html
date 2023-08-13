@@ -39,6 +39,7 @@ button:hover {
 }
 </style>
 <title>Random Key Generator</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -59,22 +60,25 @@ function generateRandomKey() {
 }
 
 // Check if a key already exists in localStorage for this IP
-let storedKey = localStorage.getItem('randomKey');
-if (!storedKey) {
-  storedKey = generateRandomKey();
-  localStorage.setItem('randomKey', storedKey);
-}
+$.getJSON('https://api.db-ip.com/v2/free/self', function(data) {
+  const userIP = data.ipAddress;
+  let storedKey = localStorage.getItem(userIP);
+  if (!storedKey) {
+    storedKey = generateRandomKey();
+    localStorage.setItem(userIP, storedKey);
+  }
 
-// Update the HTML element with the key
-const randomKeyElement = document.getElementById('randomKey');
-randomKeyElement.textContent = storedKey;
-
-// Handle the reset button
-const resetButton = document.getElementById('resetButton');
-resetButton.addEventListener('click', () => {
-  storedKey = generateRandomKey();
-  localStorage.setItem('randomKey', storedKey);
+  // Update the HTML element with the key
+  const randomKeyElement = document.getElementById('randomKey');
   randomKeyElement.textContent = storedKey;
+
+  // Handle the reset button
+  const resetButton = document.getElementById('resetButton');
+  resetButton.addEventListener('click', () => {
+    storedKey = generateRandomKey();
+    localStorage.setItem(userIP, storedKey);
+    randomKeyElement.textContent = storedKey;
+  });
 });
 </script>
 </body>
