@@ -11,22 +11,4 @@ function generateRandomKey() {
     return result;
 }
 
-function updateKey() {
-    key = generateRandomKey();
-    keyElement.textContent = key;
-    sendKeyToServer(key);
-}
-
-function sendKeyToServer(key) {
-    // Send the key to the PHP server using AJAX or fetch
-    fetch("save_key.php", {
-        method: "POST",
-        body: JSON.stringify({ key: key })
-    })
-    .then(response => response.text())
-    .then(data => console.log(data))
-    .catch(error => console.error("Error sending key:", error));
-}
-
-// Atualize a chave ao carregar a página
-updateKey();
+keyElement.textContent = key;
